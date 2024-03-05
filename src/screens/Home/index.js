@@ -2,7 +2,8 @@ import { StatusBar } from 'expo-status-bar';
 import { SafeAreaView, StyleSheet, Text, View, TextInput, ScrollView, Image } from 'react-native';
 import { useState } from 'react';
 import RNPickerSelect from 'react-native-picker-select';
-import Logo from "../../../assets/logo.png"
+import Logo from "../../../assets/logo.png";
+
 
 
 export default function Home() {
@@ -13,22 +14,29 @@ export default function Home() {
     const [inputEquipamento, setInputEquipamento] = useState("")
     const [inputTipoAtendimento, setInputTipoAtendimento] = useState("")
     const [inputDetalhesVisita, setInputDetalhesVisita] = useState("")
+    const [inputNomeTecnico, setInputNomeTecnico] = useState("")
+    const [inputCentroDeCustos, setInputCentroDeCustos] = useState("")
+    const [inputSetor, setInputSetor] = useState("")
+    const [inputNumeroPessoal, setInputNumeroPessoal] = useState("")
+    const [inputNomeCliente, setInputNomeCliente] = useState("")
+    
     return (
         <SafeAreaView style={styles.container}>
             <StatusBar style="light" />
             <View style={styles.containerTitle}>
-                <Image source={Logo}/>
+                <Image source={Logo} />
                 <Text style={styles.title}>RELATÓRIO TÉCNICO</Text>
 
             </View>
 
             <ScrollView
-            style={styles.containerInput}>
-                
+
+                style={styles.containerInput}>
+
                 <Text style={styles.titleInput}>MOVIDESK</Text>
                 <TextInput
                     style={styles.input}
-                    multiline={false} //DETALHES DA VISITA DEIXA TRUE
+                    multiline={false} 
                     autoCorrect={false}
                     placeholder="#"
                     keyboardType='numeric'
@@ -39,7 +47,7 @@ export default function Home() {
                 <Text style={styles.titleInput}>CLIENTE</Text>
                 <TextInput
                     style={styles.input}
-                    multiline={false} //DETALHES DA VISITA DEIXA TRUE
+                    multiline={false} 
                     autoCorrect={false}
                     value={inputCliente}
                     onChangeText={(texto) => setInputCliente(texto)}
@@ -47,7 +55,7 @@ export default function Home() {
                 <Text style={styles.titleInput}>SERIAL</Text>
                 <TextInput
                     style={styles.input}
-                    multiline={false} //DETALHES DA VISITA DEIXA TRUE
+                    multiline={false} 
                     autoCorrect={false}
                     value={inputSerial}
                     onChangeText={(texto) => setInputSerial(texto)}
@@ -96,6 +104,60 @@ export default function Home() {
                     onChangeText={(texto) => setInputDetalhesVisita(texto)}
                     keyborardA
                 />
+
+                <Text style={styles.titleInput}>NOME DO TÉCNICO</Text>
+                <RNPickerSelect
+                    style={styles.pickerStyle}
+                    placeholder={{ label: "Selecione o Técnico", value: null, }}
+                    value={inputNomeTecnico}
+                    onValueChange={(value) => setInputNomeTecnico(value)}
+                    items={[
+                        { label: 'ANDREI GOMES', value: 'ANDREI GOMES' },
+                        { label: 'ARTHUR CASTRO', value: 'ARTHUR CASTRO' },
+                        { label: 'BRUNO SILVA', value: 'BRUNO SILVA' },
+                        { label: 'BRUNO MUNERATO', value: 'BRUNO MUNERATO' },
+                        { label: 'CAIO SANTOS', value: 'CAIO SANTOS' },
+                        { label: 'CARLOS EDUARDO', value: 'CARLOS EDUARDO' },
+                        { label: 'ELSON SANTOS', value: 'ELSON SANTOS' },
+                        { label: 'GUILHERME ARAUJO', value: 'GUILHERME ARAUJO' },
+                        { label: 'JOSE GABRIEL', value: 'JOSE GABRIEL' },
+                        { label: 'LUIZ FRANCA', value: 'LUIZ FRANCA' },
+                        { label: 'VITOR SANTOS', value: 'VITOR SANTOS' },
+                    ]}
+                />
+                <Text style={styles.subTitle}>USO EXCLUSIVO DO CLIENTE</Text>
+                <Text style={styles.titleInput}>CENTRO DE CUSTOS</Text>
+                <TextInput
+                    style={styles.input}
+                    multiline={false} 
+                    autoCorrect={false}
+                    value={inputCentroDeCustos}
+                    onChangeText={(texto) => setInputCentroDeCustos(texto)}
+                />
+                <Text style={styles.titleInput}>SETOR</Text>
+                <TextInput
+                    style={styles.input}
+                    multiline={false} 
+                    autoCorrect={false}
+                    value={inputSetor}
+                    onChangeText={(texto) => setInputSetor(texto)}
+                />
+                <Text style={styles.titleInput}>NUMERO PESSOAL</Text>
+                <TextInput
+                    style={styles.input}
+                    multiline={false} 
+                    autoCorrect={false}
+                    value={inputNumeroPessoal}
+                    onChangeText={(texto) => setInputNumeroPessoal(texto)}
+                />
+                <Text style={styles.titleInput}>NOME DO CLIENTE</Text>
+                <TextInput
+                    style={styles.input}
+                    multiline={false} 
+                    autoCorrect={false}
+                    value={inputNomeCliente}
+                    onChangeText={(texto) => setInputNomeCliente(texto)}
+                />
             </ScrollView>
 
 
@@ -119,6 +181,15 @@ const styles = StyleSheet.create({
     title: {
         color: "#FFF",
         fontSize: 20
+    },
+    subTitle: {
+        color: "#FFF",
+        fontSize: 15,
+        fontWeight: "bold",
+        justifyContent: "center",
+        alignItems: "center",
+        marginLeft: 70,
+        marginBottom: 16
     },
     containerInput: {
         // justifyContent: "flex-start",
