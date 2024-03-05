@@ -1,8 +1,11 @@
 import { StatusBar } from 'expo-status-bar';
-import { SafeAreaView, StyleSheet, Text, View, TextInput, ScrollView, Image } from 'react-native';
-import { useState } from 'react';
+import { SafeAreaView, StyleSheet, Text, View, TextInput, ScrollView, Image, TouchableOpacity } from 'react-native';
+import { useState, useEffect } from 'react';
 import RNPickerSelect from 'react-native-picker-select';
 import Logo from "../../../assets/logo.png";
+import { printToFileAsync } from 'expo-print'
+import { shareAsync } from 'expo-sharing';
+
 
 
 
@@ -19,7 +22,72 @@ export default function Home() {
     const [inputSetor, setInputSetor] = useState("")
     const [inputNumeroPessoal, setInputNumeroPessoal] = useState("")
     const [inputNomeCliente, setInputNomeCliente] = useState("")
+    const [currentDate, setCurrentDate] = useState('');
+
+    useEffect(() => {
+        setInterval(
+          () => {
+            let day = new Date().getDate();
+            (day < 10) && (day = `0${day}`);
     
+            let month = new Date().getMonth() + 1;
+            (month < 10) && (month = `0${month}`);
+    
+            let year = new Date().getFullYear();
+    
+            let hours = new Date().getHours();
+            (hours < 10) && (hours = `0${hours}`);
+    
+            let min = new Date().getMinutes();
+            (min < 10) && (min = `0${min}`);
+    
+            let sec = new Date().getSeconds();
+            (sec < 10) && (sec = `0${sec}`);
+    
+            setCurrentDate(
+              `${day}/${month}/${year}`+ " - " + `${hours}:${min}:${sec}`
+            );
+          },
+          1000
+        );
+      }, []);
+
+    const html = `
+        <html>
+        <body style="background-image: url('../../../assets/icon.png')">
+            <h1 style="display: flex; justify-content: center";>RELATÓRIO TÉCNICO CABTEC</h1>
+            <div style="margin-top: 10px; margin-bottom: 10px; display: flex; justify-content: center;">Data do Atendimento: ${currentDate}</div>
+            <div style="display: flex; justify-content: space-between;">
+                <p>Movidesk:</br> # ${inputMovidesk}</p>
+                <p>Cliente:</br> ${inputCliente}</p>
+                <p>Serial:</br> ${inputSerial}</p></br>
+                <p>Equipamento: </br>${inputEquipamento}</p></br>
+                <p>Tipo de Atendimento: </br>${inputTipoAtendimento}</p></br>
+            </div>
+                <p>Detalhes da Visita: ${inputDetalhesVisita}</p></br>
+                <p>Nome do Técnico: ${inputNomeTecnico}</p></br>
+                <p>Centro de Custos: ${inputCentroDeCustos}</p></br>
+                <p>Setor: ${inputSetor}</p></br>
+                <p>Numero Pessoal: ${inputNumeroPessoal}</p></br>
+                <p>Nome do Cliente: ${inputNomeCliente}</p></br>
+                <h2 style="display: flex;justify-content: center">ASSINATURA DO CLIENTE</h2>
+            </body>
+            <script>
+            let dataAtual = new Date();
+            document.getElementById("data-publicacao").innerHTML = dataAtual.toDateString();
+            </script>
+        </html>
+    `;
+
+    let generatePdf = async () => {
+        const file = await printToFileAsync({
+            html: html,
+            base64: false
+        });
+
+        await shareAsync(file.uri);
+    }
+
     return (
         <SafeAreaView style={styles.container}>
             <StatusBar style="light" />
@@ -36,7 +104,7 @@ export default function Home() {
                 <Text style={styles.titleInput}>MOVIDESK</Text>
                 <TextInput
                     style={styles.input}
-                    multiline={false} 
+                    multiline={false}
                     autoCorrect={false}
                     placeholder="#"
                     keyboardType='numeric'
@@ -47,7 +115,7 @@ export default function Home() {
                 <Text style={styles.titleInput}>CLIENTE</Text>
                 <TextInput
                     style={styles.input}
-                    multiline={false} 
+                    multiline={false}
                     autoCorrect={false}
                     value={inputCliente}
                     onChangeText={(texto) => setInputCliente(texto)}
@@ -55,7 +123,7 @@ export default function Home() {
                 <Text style={styles.titleInput}>SERIAL</Text>
                 <TextInput
                     style={styles.input}
-                    multiline={false} 
+                    multiline={false}
                     autoCorrect={false}
                     value={inputSerial}
                     onChangeText={(texto) => setInputSerial(texto)}
@@ -129,7 +197,7 @@ export default function Home() {
                 <Text style={styles.titleInput}>CENTRO DE CUSTOS</Text>
                 <TextInput
                     style={styles.input}
-                    multiline={false} 
+                    multiline={false}
                     autoCorrect={false}
                     value={inputCentroDeCustos}
                     onChangeText={(texto) => setInputCentroDeCustos(texto)}
@@ -137,7 +205,7 @@ export default function Home() {
                 <Text style={styles.titleInput}>SETOR</Text>
                 <TextInput
                     style={styles.input}
-                    multiline={false} 
+                    multiline={false}
                     autoCorrect={false}
                     value={inputSetor}
                     onChangeText={(texto) => setInputSetor(texto)}
@@ -145,7 +213,7 @@ export default function Home() {
                 <Text style={styles.titleInput}>NUMERO PESSOAL</Text>
                 <TextInput
                     style={styles.input}
-                    multiline={false} 
+                    multiline={false}
                     autoCorrect={false}
                     value={inputNumeroPessoal}
                     onChangeText={(texto) => setInputNumeroPessoal(texto)}
@@ -153,11 +221,15 @@ export default function Home() {
                 <Text style={styles.titleInput}>NOME DO CLIENTE</Text>
                 <TextInput
                     style={styles.input}
-                    multiline={false} 
+                    multiline={false}
                     autoCorrect={false}
                     value={inputNomeCliente}
                     onChangeText={(texto) => setInputNomeCliente(texto)}
                 />
+                <TouchableOpacity style={styles.button} onPress={generatePdf}>
+                    <Text style={styles.textButton}>GERAR RELATÓRIO</Text>
+                </TouchableOpacity>
+
             </ScrollView>
 
 
@@ -215,6 +287,20 @@ const styles = StyleSheet.create({
             backgroundColor: "#FFF",
             marginBottom: 15
         }
+    },
+    button: {
+        width: "90%",
+        height: 50,
+        backgroundColor: "#2271b1",
+        justifyContent: "center",
+        alignItems: "center",
+        borderRadius: 5,
+    },
+    textButton: {
+        alignItems: "center",
+        justifyContent: "center",
+        color: "#FFF",
+        fontWeight: "bold"
     }
 
 });
